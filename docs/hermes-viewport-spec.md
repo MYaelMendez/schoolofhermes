@@ -257,7 +257,75 @@ No external API keys. WebLLM.js runs entirely in-browser, model weights cached i
 
 ---
 
-## 9. URI Scheme Semantics
+## 10. Homebase Integration — Hermes Desktop → æQR → Viewport
+
+Hermes desktop is the **homebase**. From there, you launch to any 9:16 viewport upon æQR verification.
+
+### Launch Flow
+
+```
+┌─────────────────────────────────────┐
+│  Hermes Desktop (homebase)           │
+│  ┌───────────────────────────────┐  │
+│  │  Agent session                │  │
+│  │  ┌─────────────────────────┐  │  │
+│  │  │  æQR scan              │  │  │  →  verify identity envelope
+│  │  │  (camera capture)       │  │  │  →  gate receipt
+│  │  └─────────────────────────┘  │  │
+│  │  ┌─────────────────────────┐  │  │
+│  │  │  Viewport launch        │  │  │  →  9:16 iframe
+│  │  │  (WebLLM.js bridge)    │  │  │  →  receipt chain
+│  │  │  (9:16 frame)         │  │  │  →  MCP tools
+│  │  │                      │  │  │  →  credential gate
+│  │  └─────────────────────────┘  │  │
+│  └───────────────────────────────┘  │
+└─────────────────────────────────────┘
+                          æQR verified
+                          ▼
+               ┌─────────────────────┐
+               │  9:16 Viewport (iframe)  │
+               │  WebLLM.js (WebGPU)      │
+               │  Receipt chain            │
+               └─────────────────────┘
+```
+
+### æQR Verification Gate
+
+The æQR code encodes the agent identity envelope (section 9). When scanned from the desktop homebase:
+
+1. **Decode** — extract `did`, `handle`, `route`, `scheme`, `name`, `manifest` from the envelope
+2. **Verify** — check the manifest URL returns 200 and the capability set matches
+3. **Gate** — emit a receipt (hash chain) for the verification event
+4. **Launch** — open the 9:16 viewport with the verified identity bound to the session
+
+### CLI Integration
+
+```bash
+# Desktop homebase
+hermes desktop start
+
+# Scan æQR to launch viewport
+hermes viewport launch --qr <image>
+
+# Or launch directly (if already verified)
+hermes viewport start
+```
+
+### Relationship to Existing Infrastructure
+
+| Component | Role |
+|-----------|------|
+| `hermes desktop` | Homebase — where the agent lives between sessions |
+| `hermes viewport` | 9:16 iframe — where the agent acts on mobile |
+| æQR | Verification gate — proves identity before launch |
+| `point-agent.png` | The æQR code agents scan to find the viewport |
+| `point-human.png` | The æQR code phones scan to visit the route |
+
+The desktop is the **persistent** surface; the viewport is the **portable** surface. æQR is the bridge.
+
+---
+
+## 11. URI Scheme Semantics
 
 The viewport is addressed by a protocol URI that ties it to the sovereign envelope/route infrastructure:
 
@@ -294,7 +362,7 @@ The viewport URI is the **agent-facing handle** — what you give an agent to te
 
 ---
 
-## 10. Open Questions
+## 12. Open Questions
 
 1. **WebLLM.js version** — current stable is 0.2.x; confirm WebGPU support matrix for target devices
 2. **Model hosting** — Hugging Face CDN vs local mirror vs IPFS
