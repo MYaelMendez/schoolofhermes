@@ -1,4 +1,4 @@
-# hermes-viewport — Design Spec
+# hermes-viewport 🦅 — Design Spec
 
 **Status:** Draft v0.1
 **Surface:** Browser/WebGPU rendering target driven by Hermes as a first-class agent surface
