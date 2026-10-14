@@ -160,7 +160,63 @@ No external API keys. Local-only, sovereign.
 
 ---
 
-## 7. Architecture
+## 7. Security Architecture — NemoClaw Patterns
+
+NemoClaw (NVIDIA, Apache-2.0, 22.7k★) provides security primitives that transfer directly to the hermes-viewport context. TypeScript alignment (94.4%) means we can import code, not just patterns.
+
+### Sandboxing
+
+| NemoClaw pattern | hermes-viewport adaptation |
+|------------------|----------------------------|
+| Worker-thread isolation | Sandboxed iframe for WebLLM.js |
+| Process boundary | Browser frame boundary (9:16 viewport) |
+| Permission escalation (`--yolo`) | Touch-gesture approval (tap to approve) |
+| Secret injection (no env vars) | IndexedDB-only model cache, no external calls |
+
+### iframe Sandbox Model
+
+```
+┌─────────────────────────────────────┐
+│  Hermes Agent (trusted)             │
+│  ┌───────────────────────────────┐  │
+│  │  Viewport (trusted UI)        │  │
+│  │  ┌─────────────────────────┐  │  │
+│  │  │  iframe sandbox         │  │  │
+│  │  │  (WebLLM.js + agent)    │  │  │
+│  │  │  - no network access    │  │  │
+│  │  │  - no storage access    │  │  │
+│  │  │  - no DOM parent access │  │  │
+│  │  └─────────────────────────┘  │  │
+│  └───────────────────────────────┘  │
+└─────────────────────────────────────┘
+```
+
+**iframe permissions:** `sandbox="allow-scripts"` — scripts run, but no same-origin, no storage, no network, no form submission.
+
+### Receipt Chain
+
+NemoClaw's commit history demonstrates append-only hash-linked audit logs. The hermes-viewport receipt chain (section 5) applies the same pattern to inference provenance:
+
+```
+receipt[N].hash = SHA-256(model + prompt + response + timestamp + receipt[N-1].hash)
+```
+
+### Permission Model
+
+| Action | NemoClaw | hermes-viewport |
+|--------|----------|-----------------|
+| Read file | Allowed | DOM snapshot allowed |
+| Write file | Approved | `viewport.render` requires approval |
+| Network | Blocked | Blocked (sandbox) |
+| Secrets | Injected | None (no external API keys) |
+
+### Secret Gate
+
+No external API keys. WebLLM.js runs entirely in-browser, model weights cached in IndexedDB. No telemetry, no external calls. Receipts are local provenance, not remote attestation.
+
+---
+
+## 8. Architecture
 
 ```
 ┌─────────────────────────────────────┐
@@ -187,7 +243,7 @@ No external API keys. Local-only, sovereign.
 
 ---
 
-## 8. Implementation Phases
+## 9. Implementation Phases
 
 | Phase | Deliverable | Depends on |
 |-------|-------------|------------|
