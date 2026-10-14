@@ -330,7 +330,7 @@ The desktop is the **persistent** surface; the viewport is the **portable** surf
 The viewport is addressed by a protocol URI that ties it to the sovereign envelope/route infrastructure:
 
 ```
->_æææ://|||hermes-agent
+>_æææ://|||hermes-viewport
 ```
 
 | Token | Meaning |
@@ -338,11 +338,11 @@ The viewport is addressed by a protocol URI that ties it to the sovereign envelo
 | `>_` | Agent prompt prefix (matches AGENTS.md convention) |
 | `æææ://` | Sovereign namespace scheme (matches `æ://` in the agentic language chassis) |
 | `\|\|\|` | Separator between scheme and surface handle |
-| `hermes-agent` | Target surface handle — the portable agentic environment |
+| `hermes-viewport` | Target surface handle — the portable agentic environment |
 
 ### Resolution
 
-When an agent receives `>_æææ://|||hermes-agent`, it resolves to:
+When an agent receives `>_æææ://|||hermes-viewport`, it resolves to:
 
 1. **Identity** — `did:web:myaelmendez.github.io` (from the agent identity envelope)
 2. **Route** — `https://myaelmendez.github.io/` (the sovereign truth surface)
@@ -356,7 +356,7 @@ When an agent receives `>_æææ://|||hermes-agent`, it resolves to:
 | Agent identity envelope | `æ://` | DID, handle, X, email, route, scheme, name, manifest |
 | Point-agent QR | `æ://` | Encodes the identity envelope for agents to scan |
 | Point-human QR | `https://myaelmendez.github.io/` | Plain URL for phones to visit |
-| Viewport URI | `>_æææ://\|\|\|hermes-agent` | Points an agent at the portable agentic environment |
+| Viewport URI | `>_æææ://\|\|\|hermes-viewport` | Points an agent at the portable agentic environment |
 
 The viewport URI is the **agent-facing handle** — what you give an agent to tell it "act here, in this 9:16 surface, with WebLLM inference, receipt-provenanced."
 
