@@ -201,7 +201,44 @@ No external API keys. Local-only, sovereign.
 
 ---
 
-## 9. Open Questions
+## 9. URI Scheme Semantics
+
+The viewport is addressed by a protocol URI that ties it to the sovereign envelope/route infrastructure:
+
+```
+>_æææ://|||hermes-agent
+```
+
+| Token | Meaning |
+|-------|---------|
+| `>_` | Agent prompt prefix (matches AGENTS.md convention) |
+| `æææ://` | Sovereign namespace scheme (matches `æ://` in the agentic language chassis) |
+| `\|\|\|` | Separator between scheme and surface handle |
+| `hermes-agent` | Target surface handle — the portable agentic environment |
+
+### Resolution
+
+When an agent receives `>_æææ://|||hermes-agent`, it resolves to:
+
+1. **Identity** — `did:web:myaelmendez.github.io` (from the agent identity envelope)
+2. **Route** — `https://myaelmendez.github.io/` (the sovereign truth surface)
+3. **Manifest** — `https://myaelmendez.github.io/capability-manifest.json` (live capability index)
+4. **Surface** — `hermes-viewport` (the 9:16 browser surface where the agent acts)
+
+### Relationship to existing infrastructure
+
+| Component | URI | Purpose |
+|-----------|-----|---------|
+| Agent identity envelope | `æ://` | DID, handle, X, email, route, scheme, name, manifest |
+| Point-agent QR | `æ://` | Encodes the identity envelope for agents to scan |
+| Point-human QR | `https://myaelmendez.github.io/` | Plain URL for phones to visit |
+| Viewport URI | `>_æææ://\|\|\|hermes-agent` | Points an agent at the portable agentic environment |
+
+The viewport URI is the **agent-facing handle** — what you give an agent to tell it "act here, in this 9:16 surface, with WebLLM inference, receipt-provenanced."
+
+---
+
+## 10. Open Questions
 
 1. **WebLLM.js version** — current stable is 0.2.x; confirm WebGPU support matrix for target devices
 2. **Model hosting** — Hugging Face CDN vs local mirror vs IPFS
